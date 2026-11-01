@@ -7,3 +7,6 @@ export * from './tuning';
 export * from './fretboard';
 export * from './labels';
 export * from './octaves';
+export * from './progression';
+export * from './positions';
+export * from './harmony';
