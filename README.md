@@ -16,3 +16,7 @@ npm run build
 ```
 
 See [CLAUDE.md](CLAUDE.md) for architecture, conventions and the phase plan.
+
+## Credits
+
+Acoustic guitar samples from [tonejs-instruments](https://github.com/nbrosowsky/tonejs-instruments) by Nicholas Brosowsky (CC BY 3.0).

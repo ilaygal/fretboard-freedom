@@ -2,7 +2,11 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useProfile } from '@/app/profile';
 
-const SOON = ['freePlay', 'fretboardMastery', 'chords', 'improv', 'ear', 'solo', 'tools'] as const;
+const READY = [
+  { id: 'fretboardMastery', to: '/notes', hint: 'notesHint' },
+  { id: 'tools', to: '/tools', hint: 'toolsHint' },
+] as const;
+const SOON = ['freePlay', 'chords', 'improv', 'ear', 'solo'] as const;
 
 export function HomePage() {
   const { t } = useTranslation();
@@ -31,6 +35,15 @@ export function HomePage() {
         <div className="text-2xl font-black">{t('home.explore')}</div>
         <div className="font-medium opacity-80">{t('home.exploreHint')}</div>
       </Link>
+
+      <div className="grid grid-cols-2 gap-3">
+        {READY.map((x) => (
+          <Link key={x.id} to={x.to} className="rounded-3xl border border-line bg-surface-2 p-4 active:scale-[0.98]">
+            <div className="text-lg font-bold">{t(`home.${x.id}`)}</div>
+            <div className="text-sm text-muted">{t(`home.${x.hint}`)}</div>
+          </Link>
+        ))}
+      </div>
 
       <div className="grid grid-cols-2 gap-3">
         {SOON.map((id) => (

@@ -147,6 +147,12 @@ export function SettingsPage() {
           </Chip>
         </Section>
 
+        <Section title={t('settings.micExactOctave')}>
+          <Chip selected={settings.micExactOctave} onClick={() => void updateSettings({ micExactOctave: !settings.micExactOctave })}>
+            {settings.micExactOctave ? t('settings.on') : t('settings.off')}
+          </Chip>
+        </Section>
+
         <Section title={t('settings.language')} hint={t('settings.hebrewSoon')}>
           <Chip selected>English</Chip>
         </Section>

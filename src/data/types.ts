@@ -19,6 +19,10 @@ export interface Settings {
   theoryLevel: 'simple' | 'detailed';
   language: 'en' | 'he';
   roleColors: Partial<Record<NoteRole, string>>;
+  /** Measured audio + touch delay, subtracted from timing feedback. */
+  latencyMs: number;
+  /** Mic drills: require the exact octave, not just the note name. */
+  micExactOctave: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -32,6 +36,8 @@ export const DEFAULT_SETTINGS: Settings = {
   theoryLevel: 'simple',
   language: 'en',
   roleColors: {},
+  latencyMs: 0,
+  micExactOctave: false,
 };
 
 export interface Background {
@@ -53,4 +59,30 @@ export interface Profile {
 
 export function withDefaults(settings: Partial<Settings> | undefined): Settings {
   return { ...DEFAULT_SETTINGS, ...settings, roleColors: { ...DEFAULT_SETTINGS.roleColors, ...settings?.roleColors } };
+}
+
+/** One answered drill question (or one tap in a multi-target question). */
+export interface Attempt {
+  id?: number;
+  profileId: string;
+  drillId: string;
+  /** Spaced-repetition item, e.g. "note:7@s3" (G on string 3). */
+  itemKey: string;
+  /** Neck position involved, "string:fret", for the weak-spot heatmap. */
+  pos?: string;
+  correct: boolean;
+  ms: number;
+  at: number;
+  input: 'tap' | 'mic' | 'choice';
+}
+
+export interface SrsCard {
+  profileId: string;
+  itemKey: string;
+  stability: number;
+  difficulty: number;
+  reps: number;
+  lapses: number;
+  lastReview: number;
+  due: number;
 }

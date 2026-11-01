@@ -11,6 +11,10 @@ export interface FretMarker {
   id?: string;
   /** Accessible description, e.g. "G, root, string 6 fret 3". */
   description?: string;
+  /** Fill colour override (e.g. heatmap); otherwise the role colour. */
+  color?: string;
+  /** Visual feedback ring after an answer. */
+  feedback?: 'right' | 'wrong';
 }
 
 export interface FretRegion {

@@ -10,6 +10,8 @@ export interface FretboardProps {
   leftHanded: boolean;
   markers: FretMarker[];
   regions?: FretRegion[];
+  /** Lines joining positions, e.g. octave shapes. */
+  connections?: { from: FretPos; to: FretPos }[];
   /** Called when any position is tapped (marked or not). */
   onTap?: (pos: FretPos) => void;
   showFretNumbers?: boolean;
@@ -30,6 +32,7 @@ export function Fretboard({
   leftHanded,
   markers,
   regions = [],
+  connections = [],
   onTap,
   showFretNumbers = true,
   className,
@@ -104,17 +107,24 @@ export function Fretboard({
           </text>
         ))}
 
+      {connections.map((c) => {
+        if ([c.from, c.to].some((p) => p.fret < range.from || p.fret > range.to)) return null;
+        const a = layout.note(c.from);
+        const b = layout.note(c.to);
+        return <line key={`conn-${posKey(c.from)}-${posKey(c.to)}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y} className="fb-connection" />;
+      })}
+
       {/* Markers: keyed by id, so a later animation layer can slide a marker when a shape moves. */}
       {visibleMarkers.map((m) => {
         const p = layout.note(m.pos);
         return (
           <g
             key={m.id ?? posKey(m.pos)}
-            className={`fb-marker fb-role-${m.role}`}
+            className={`fb-marker fb-role-${m.role}${m.feedback ? ` fb-feedback-${m.feedback}` : ''}`}
             transform={`translate(${p.x} ${p.y})`}
             aria-hidden="true"
           >
-            <circle r={r} />
+            <circle r={r} style={m.color ? { fill: m.color } : undefined} />
             {m.label && (
               <text textAnchor="middle" dominantBaseline="central" fontSize={m.label.length > 2 ? 10.5 : 13}>
                 {m.label}

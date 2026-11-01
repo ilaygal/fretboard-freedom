@@ -6,3 +6,4 @@ export * from './spelling';
 export * from './tuning';
 export * from './fretboard';
 export * from './labels';
+export * from './octaves';
