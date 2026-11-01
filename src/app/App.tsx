@@ -7,6 +7,7 @@ import { OnboardingPage } from '@/modules/onboarding/OnboardingPage';
 import { MasteryPage } from '@/modules/fretboard-mastery/MasteryPage';
 import { ToolsPage } from '@/modules/tools/ToolsPage';
 import { JamPage } from '@/modules/jam/JamPage';
+import { ChordsPage } from '@/modules/chords/ChordsPage';
 import { unlockAudio } from '@/audio/engine';
 
 function AppRoutes() {
@@ -29,6 +30,7 @@ function AppRoutes() {
           <Route path="/tools" element={<ToolsPage />} />
           <Route path="/play" element={<JamPage key="free" lab={false} />} />
           <Route path="/improv" element={<JamPage key="lab" lab />} />
+          <Route path="/chords" element={<ChordsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </>
       )}

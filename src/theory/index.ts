@@ -10,3 +10,4 @@ export * from './octaves';
 export * from './progression';
 export * from './positions';
 export * from './harmony';
+export * from './voicings';

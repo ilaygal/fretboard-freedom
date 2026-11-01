@@ -8,6 +8,7 @@ import {
   roleOverChord,
   symbolFromSemitones,
   allPositions,
+  windowAround,
   posKey,
   type ChordInfo,
   type FretRange,
@@ -184,9 +185,5 @@ function mod12Safe(i: number, n: number) {
   return ((i % n) + n) % n;
 }
 
-/** Neck range around a hand position: one fret below, two above, at least five frets shown. */
-export function zoomTo(span: FretRange, maxFret: number): FretRange {
-  const from = Math.max(0, span.from - 1);
-  const to = Math.min(maxFret, Math.max(span.to + 2, from + 5));
-  return { from, to };
-}
+/** Neck range around a hand position (kept as a named export for the jam screen). */
+export const zoomTo = windowAround;

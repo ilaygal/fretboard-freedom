@@ -43,3 +43,10 @@ export function positionsOfPitchClasses(t: Tuning, pcs: Iterable<PitchClass>, ra
 export function positionsOfMidi(t: Tuning, midi: number, range: FretRange): FretPos[] {
   return allPositions(t, range).filter((p) => midiAt(t, p) === midi);
 }
+
+/** A neck range around a span of frets: one fret below, two above, at least `minFrets` + 1 frets shown. */
+export function windowAround(span: FretRange, maxFret: number, minFrets = 5): FretRange {
+  const from = Math.max(0, span.from - 1);
+  const to = Math.min(maxFret, Math.max(span.to + 2, from + minFrets));
+  return { from, to };
+}
