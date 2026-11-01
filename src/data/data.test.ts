@@ -68,3 +68,32 @@ describe('backup', () => {
     expect((await repos.profiles.list()).length).toBe(1);
   });
 });
+
+describe('practice data', () => {
+  it('logs attempts and lists them by drill and time', async () => {
+    const base = { profileId: 'p1', itemKey: 'note:7@s3', correct: true, ms: 1200, input: 'tap' as const };
+    await repos.attempts.add({ ...base, drillId: 'find', at: 300 });
+    await repos.attempts.add({ ...base, drillId: 'name', at: 100 });
+    await repos.attempts.add({ ...base, drillId: 'find', at: 200 });
+    await repos.attempts.add({ ...base, profileId: 'p2', drillId: 'find', at: 250 });
+    expect((await repos.attempts.list('p1')).map((a) => a.at)).toEqual([100, 200, 300]);
+    expect((await repos.attempts.list('p1', { drillId: 'find' })).map((a) => a.at)).toEqual([200, 300]);
+    expect((await repos.attempts.list('p1', { since: 150 })).map((a) => a.at)).toEqual([200, 300]);
+  });
+
+  it('stores spaced-repetition cards per profile', async () => {
+    const card = { profileId: 'p1', itemKey: 'a', stability: 1, difficulty: 5, reps: 1, lapses: 0, lastReview: 0, due: 10 };
+    await repos.srs.put(card);
+    await repos.srs.put({ ...card, profileId: 'p2' });
+    const got = await repos.srs.getMany('p1', ['a', 'b']);
+    expect([...got.keys()]).toEqual(['a']);
+    expect((await repos.srs.list('p1')).length).toBe(1);
+  });
+
+  it('includes practice data in backups', async () => {
+    await repos.attempts.add({ profileId: 'p', drillId: 'd', itemKey: 'k', correct: false, ms: 1, at: 1, input: 'mic' });
+    const file = await repos.backup.exportAll();
+    expect(file.tables.attempts?.length).toBe(1);
+    expect(file.schemaVersion).toBe(2);
+  });
+});

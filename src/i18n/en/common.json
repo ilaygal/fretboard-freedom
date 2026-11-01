@@ -1,6 +1,14 @@
 {
-  "app": { "name": "Fretboard Freedom", "tagline": "Know the neck. Hear the music. Play freely." },
-  "nav": { "home": "Home", "explore": "Explore", "settings": "Settings", "back": "Back" },
+  "app": {
+    "name": "Fretboard Freedom",
+    "tagline": "Know the neck. Hear the music. Play freely."
+  },
+  "nav": {
+    "home": "Home",
+    "explore": "Explore",
+    "settings": "Settings",
+    "back": "Back"
+  },
   "home": {
     "explore": "Explore the neck",
     "exploreHint": "See any scale anywhere on the fretboard, tap to hear it",
@@ -12,7 +20,9 @@
     "ear": "Ear training",
     "improv": "Improvisation Lab",
     "solo": "Solo study",
-    "tools": "Tuner and metronome"
+    "tools": "Tuner and metronome",
+    "notesHint": "Find any note on the neck, fast",
+    "toolsHint": "Tune up, keep time"
   },
   "explorer": {
     "key": "Key",
@@ -20,7 +30,13 @@
     "startHere": "Start here",
     "moreColours": "More colours",
     "labels": "Labels",
-    "labelModes": { "note": "Notes", "interval": "Intervals", "degree": "Degrees", "solfege": "Do Re Mi", "none": "Off" },
+    "labelModes": {
+      "note": "Notes",
+      "interval": "Intervals",
+      "degree": "Degrees",
+      "solfege": "Do Re Mi",
+      "none": "Off"
+    },
     "focus": "Focus area",
     "wholeNeck": "Whole neck",
     "frets": "Frets {{from}} to {{to}}",
@@ -30,9 +46,10 @@
     "tapped": "{{note}}, string {{string}}, fret {{fret}}.",
     "inScale": "It's in the scale: {{meaning}}",
     "notInScale": "Not in this scale.",
-    "legendRoot": "Home note (root)",
-    "legendScale": "Other scale notes",
-    "whatIsRoot": "The home note is the note the scale is named after. Melodies feel finished when they land on it."
+    "legendRoot": "{{note}} = home. Phrases sound finished when they land here.",
+    "legendScale": "Other notes in the scale. Safe to play, they lead back home.",
+    "whatIsRoot": "Try it: play a few notes, then end on a red dot. Hear how it sounds \"done\"?",
+    "legendBlue": "The blue note: gritty and bluesy. Bend into it or slide past it."
   },
   "settings": {
     "title": "Settings",
@@ -65,7 +82,8 @@
     "import": "Load backup file",
     "importDone": "Backup loaded.",
     "on": "On",
-    "off": "Off"
+    "off": "Off",
+    "micExactOctave": "Mic drills: exact octave"
   },
   "onboarding": {
     "welcome": "Welcome! Let's set things up in under a minute.",
@@ -130,5 +148,106 @@
     "locrian": "Unstable, rarely used",
     "harmonicMinor": "Exotic, classical minor",
     "melodicMinor": "Jazzy minor"
+  },
+  "notes": {
+    "title": "Know every note",
+    "intro": "Short 60-second rounds. The app keeps asking about the spots you miss most.",
+    "mode": "How do you want to practise?",
+    "modes": {
+      "name": {
+        "label": "Name it",
+        "hint": "A spot lights up, you say which note it is"
+      },
+      "find": {
+        "label": "Find it",
+        "hint": "Find a note on one string"
+      },
+      "findAll": {
+        "label": "Find them all",
+        "hint": "Find every place a note lives"
+      },
+      "play": {
+        "label": "Play it",
+        "hint": "Play the note on your guitar, the mic checks you"
+      }
+    },
+    "level": "Where on the neck?",
+    "recommended": "Next up",
+    "levels": {
+      "lowE": "Low E string, natural notes",
+      "aString": "A string, natural notes",
+      "lowTwo": "Low E + A strings, all notes",
+      "dString": "D string, natural notes",
+      "gString": "G string, natural notes",
+      "bString": "B string, natural notes",
+      "highE": "High E string (same as low E!)",
+      "open": "All strings, frets 0-5",
+      "middle": "All strings, frets 5-9",
+      "upTo12": "All strings, frets 7-12",
+      "above12": "All strings, frets 12-17",
+      "wholeNeck": "The whole neck"
+    },
+    "start": "Start a round",
+    "heatmap": "My weak spots",
+    "heatmapHint": "Green = solid, yellow = getting there, red = needs love. Grey spots haven't come up yet.",
+    "heatmapEmpty": "Play a few rounds and your weak spots will show up here.",
+    "promptName": "Which note is this?",
+    "promptFind": "Find {{note}} on string {{string}}",
+    "promptFindAll": "Find every {{note}}",
+    "promptPlay": "Play {{note}} on string {{string}}",
+    "stringNames": {
+      "1": "1 (high E)",
+      "2": "2 (B)",
+      "3": "3 (G)",
+      "4": "4 (D)",
+      "5": "5 (A)",
+      "6": "6 (low E)"
+    },
+    "foundOf": "{{found}} of {{total}} found",
+    "score": "Score",
+    "streak": "Streak",
+    "timeLeft": "{{seconds}}s",
+    "listening": "Listening...",
+    "youPlayed": "You played {{note}}",
+    "micDenied": "The app can't hear you: microphone access is blocked. On iPhone: Settings, Safari, Microphone, then allow.",
+    "micFailed": "Couldn't start the microphone.",
+    "micTip": "Tip: play one clean note and let it ring.",
+    "right": "Yes!",
+    "wrong": "It's {{note}}",
+    "roundOver": "Round over",
+    "correct": "{{count}} right",
+    "accuracy": "{{percent}}% accuracy",
+    "avgTime": "{{seconds}}s per answer",
+    "practiseNext": "Practise next:",
+    "playAgain": "Play again",
+    "done": "Done",
+    "showOctaves": "Show octaves",
+    "octavesHint": "Lines connect the same note an octave apart: learn these shapes and one note unlocks the rest.",
+    "wrongTap": "That was {{tapped}}. Here's {{note}}."
+  },
+  "tools": {
+    "title": "Tuner and metronome",
+    "tuner": "Tuner",
+    "metronome": "Metronome",
+    "timing": "Timing check",
+    "startTuner": "Start tuner",
+    "stop": "Stop",
+    "playAString": "Play one string",
+    "inTune": "In tune",
+    "tuneUp": "Too low: tighten",
+    "tuneDown": "Too high: loosen",
+    "nearestString": "Closest string: {{string}}",
+    "bpm": "BPM",
+    "tap": "Tap tempo",
+    "beats": "Beats per bar",
+    "subdivision": "Clicks per beat",
+    "start": "Start",
+    "accent": "Accent beat 1",
+    "timingIntro": "Bluetooth headphones and some phones add a delay. Tap the big button with each of the 8 clicks and the app will measure it.",
+    "timingStart": "Start timing check",
+    "timingTap": "Tap with the click",
+    "timingResult": "Your delay: {{ms}} ms. Saved.",
+    "timingRetry": "Not enough steady taps. Try again.",
+    "spaceHint": "Space bar: start / stop"
   }
 }

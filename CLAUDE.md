@@ -63,7 +63,22 @@ Key decisions:
 - **Data access only through repositories** (`repos.profiles`, `repos.backup`), so a synced backend (Supabase) can be
   added later. Settings are merged with `DEFAULT_SETTINGS` on read, so new settings need no migration.
 - **Audio:** Tone.js is preloaded at startup; `unlockAudio()` runs on the first pointer/key event (iOS needs the
-  gesture). `playMidi()` is the tap-to-hear entry point. Samples come in Phase 2.
+  gesture). `playMidi()` (`src/audio/play.ts`) is the tap-to-hear entry point; it uses sampled acoustic guitar
+  (`public/samples/guitar-acoustic`, 12 notes a minor third apart, repitched by `Tone.Sampler`) with a pluck-synth
+  fallback while they load. Everything goes through `getMaster()`. The metronome runs on Tone's transport and
+  reports ticks via `Tone.Draw` so visuals stay in sync.
+- **Pitch detection:** `listenToMic()` uses an `AnalyserNode` (fftSize 4096) polled ~30x/s with pitchy (McLeod).
+  An AudioWorklet was the plan, but the analyser is simpler and reliable on iOS; revisit only if latency matters.
+  Mic constraints turn off echo cancellation, noise suppression and AGC. `PitchStabilizer` turns noisy frames into
+  "note played" events (clear, loud, steady for 4 frames, reported once until silence). While the mic is on,
+  `navigator.audioSession.type` is `play-and-record`, otherwise `playback`.
+- **Practice data:** every answer is an `Attempt` (`repos.attempts`), with the neck position when there is one
+  (feeds the heatmap). Spaced repetition is FSRS-lite (`src/domain/srs/fsrs.ts`, FSRS-4.5 default weights) on
+  stable item keys: `pos:<string>:<fret>`, `note:<pc>@s<string>`, `all:<pc>`. `pickNext` weights items by urgency
+  and never repeats the last few. Drill ids are `notes.<mode>.<levelId>`.
+- **Note-finder levels** are data in `src/content/noteFinderLevels.ts`: string by string (natural notes first), then
+  fret regions, then the whole neck. A level is "passed" at 85% over its last 20 attempts; that only drives the
+  "Next up" badge, players can pick any level.
 - **Routing:** `HashRouter` (GitHub Pages has no rewrites). Base path `/fretboard-freedom/` (override with `VITE_BASE`).
 - **i18n:** i18next, English strings in `src/i18n/en/common.json`. Every user-visible string goes through `t()`.
   `applyLanguage()` sets page `dir`; fretboard and tab views stay LTR.
@@ -76,6 +91,8 @@ Key decisions:
 - Every theory function has unit tests, including property-based tests (fast-check) across keys and tunings.
   A bug fix in theory starts with a failing test.
 - Pure logic for a screen lives in a `model.ts` next to it, with tests.
+- Feedback colours: the correct answer is always green (`ANSWER_GREEN`), a wrong tap gets a red ring. Never show
+  the answer in the red/orange root colour; it reads as "wrong".
 - Commits: `phase-N: <what changed>`. Each phase ends with the app running, tests green, deployed, and this file updated.
 
 ## Commands
@@ -92,7 +109,7 @@ Pages (repo Settings, Pages, Source: GitHub Actions).
 
 ## Phase status
 - [x] Phase 1: foundation (theory core, fretboard, profile/settings/backup, onboarding, neck explorer, PWA, CI/deploy)
-- [ ] Phase 2: Fretboard Mastery, tuner, metronome, pitch detection, drill engine, spaced repetition
+- [x] Phase 2: Fretboard Mastery (name/find/find-all/play-by-mic, levels, heatmap, octave shapes), tuner, metronome, timing check, drill engine, spaced repetition
 - [ ] Phase 3: backing-track engine, Free Play, Improv Lab core
 - [ ] Phase 4: Chords Everywhere (triads first, CAGED, drop-2/3, voice leading, chord builder, lookup tools)
 - [ ] Phase 5: improv challenges, mic analysis, lick library, recording

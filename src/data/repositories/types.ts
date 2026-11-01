@@ -1,4 +1,4 @@
-import type { Background, Profile, Settings } from '../types';
+import type { Attempt, Background, Profile, Settings, SrsCard } from '../types';
 
 /**
  * Data access goes through these interfaces only. Today they are backed by IndexedDB (Dexie);
@@ -25,4 +25,16 @@ export interface BackupFile {
   schemaVersion: number;
   exportedAt: string;
   tables: Record<string, unknown[]>;
+}
+
+export interface AttemptRepository {
+  add(attempt: Omit<Attempt, 'id'>): Promise<void>;
+  /** Attempts for a profile, newest last; optionally only one drill and/or since a time. */
+  list(profileId: string, opts?: { drillId?: string; since?: number }): Promise<Attempt[]>;
+}
+
+export interface SrsRepository {
+  getMany(profileId: string, itemKeys: string[]): Promise<Map<string, SrsCard>>;
+  put(card: SrsCard): Promise<void>;
+  list(profileId: string): Promise<SrsCard[]>;
 }

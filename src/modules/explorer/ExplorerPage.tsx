@@ -4,10 +4,11 @@ import { Fretboard } from '@/components/fretboard';
 import { Chip, ChipRow, PageHeader } from '@/components/ui';
 import { useProfile } from '@/app/profile';
 import { useMediaQuery } from '@/app/useMediaQuery';
-import { playMidi } from '@/audio/engine';
+import { playMidi } from '@/audio/play';
 import {
   FLAT_NAMES,
   midiAt,
+  octaveShapes,
   plainIntervalName,
   prettyInterval,
   preferredTonic,
@@ -29,6 +30,7 @@ export function ExplorerPage() {
   const [scale, setScale] = useState<ScaleId>('minorPentatonic');
   const [focus, setFocus] = useState<{ from: number; to: number } | null>(null);
   const [tap, setTap] = useState<TapInfo | null>(null);
+  const [showOctaves, setShowOctaves] = useState(true);
   const labelMode = settings.labelMode;
 
   const view = useMemo(
@@ -117,6 +119,12 @@ export function ExplorerPage() {
           </Chip>
         </ChipRow>
 
+        <ChipRow label={t('notes.showOctaves')}>
+          <Chip selected={showOctaves} onClick={() => setShowOctaves(!showOctaves)}>
+            {showOctaves ? t('settings.on') : t('settings.off')}
+          </Chip>
+        </ChipRow>
+
         <div aria-live="polite" className="min-h-16 rounded-2xl bg-surface p-3 text-lg">
           {tap ? (
             <>
@@ -134,13 +142,18 @@ export function ExplorerPage() {
           )}
         </div>
 
-        <div className="flex flex-wrap gap-4 text-sm text-muted">
+        <div className="flex flex-col gap-2 text-base">
           <span className="flex items-center gap-2">
-            <span className="inline-block size-4 rounded-full bg-role-root" /> {t('explorer.legendRoot')}
+            <span className="inline-block size-4 shrink-0 rounded-full bg-role-root" /> {t('explorer.legendRoot', { note: prettyNote(view.tonic) })}
           </span>
           <span className="flex items-center gap-2">
-            <span className="inline-block size-4 rounded-full bg-role-scale" /> {t('explorer.legendScale')}
+            <span className="inline-block size-4 shrink-0 rounded-full bg-role-scale" /> {t('explorer.legendScale')}
           </span>
+          {scale === 'blues' && (
+            <span className="flex items-center gap-2">
+              <span className="inline-block size-4 shrink-0 rounded-full bg-role-blue" /> {t('explorer.legendBlue')}
+            </span>
+          )}
         </div>
         {simple && <p className="text-sm text-muted">{t('explorer.whatIsRoot')}</p>}
 
@@ -152,6 +165,7 @@ export function ExplorerPage() {
             leftHanded={settings.leftHanded}
             markers={view.markers}
             regions={focus ? [focus] : []}
+            connections={tap && showOctaves ? octaveShapes(tuning, tap.pos, range).connections : []}
             onTap={onTap}
             className={orientation === 'horizontal' ? 'w-full min-w-[900px]' : 'w-full'}
             label={`${view.tonic} ${t(`scales.${scale}`)}`}
