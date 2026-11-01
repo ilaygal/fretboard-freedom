@@ -1,0 +1,58 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-stage: #0b0d12;
+  --color-surface: #151922;
+  --color-surface-2: #1e2430;
+  --color-line: #2c3442;
+  --color-ink: #f2f4f8;
+  --color-muted: #9aa3b2;
+  --color-spot: #f5a524;
+  --color-role-root: #ff6b4a;
+  --color-role-chord: #f5c542;
+  --color-role-scale: #4cc9f0;
+  --color-role-target: #b388ff;
+  --color-role-avoid: #6b7280;
+  --color-role-blue: #3a86ff;
+  --color-role-neutral: #8b93a3;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Hebrew', sans-serif;
+}
+
+html,
+body {
+  background: var(--color-stage);
+  color: var(--color-ink);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+body {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Fretboard */
+.fb-board { fill: #1a1410; }
+.fb-region { fill: var(--color-spot); fill-opacity: 0.12; stroke: var(--color-spot); stroke-opacity: 0.6; stroke-width: 1.5; }
+.fb-inlay { fill: #3b3128; }
+.fb-fret { stroke: #8a8f99; stroke-width: 2; }
+.fb-nut { stroke: #e8e2d0; stroke-width: 6; stroke-linecap: round; }
+.fb-string { stroke: #cfd3da; stroke-opacity: 0.85; }
+.fb-fret-number { fill: var(--color-muted); font-size: 12px; font-weight: 600; }
+.fb-marker { transition: opacity 200ms; pointer-events: none; }
+.fb-marker circle { stroke: #0b0d12; stroke-width: 2; }
+.fb-marker text { fill: #0b0d12; font-weight: 700; }
+.fb-role-root circle { fill: var(--fb-root, var(--color-role-root)); }
+.fb-role-chord circle { fill: var(--fb-chord, var(--color-role-chord)); }
+.fb-role-scale circle { fill: var(--fb-scale, var(--color-role-scale)); }
+.fb-role-target circle { fill: var(--fb-target, var(--color-role-target)); }
+.fb-role-avoid circle { fill: var(--fb-avoid, var(--color-role-avoid)); }
+.fb-role-blue circle { fill: var(--fb-blue, var(--color-role-blue)); }
+.fb-role-blue text { fill: #fff; }
+.fb-role-neutral circle { fill: var(--fb-neutral, var(--color-role-neutral)); }
+.fb-role-ghost { opacity: 0.22; }
+.fb-role-ghost circle { fill: var(--color-role-neutral); }
+.fb-marker.fb-flash circle { stroke: #fff; stroke-width: 4; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fb-marker { transition: none; }
+}
