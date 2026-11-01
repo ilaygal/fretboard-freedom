@@ -14,7 +14,7 @@
     "exploreHint": "See any scale anywhere on the fretboard, tap to hear it",
     "soon": "Soon",
     "freePlay": "Free Play",
-    "freePlayHint": "Random key and groove, just play",
+    "freePlayHint": "A random groove starts with one more tap. Just play.",
     "fretboardMastery": "Know every note",
     "chords": "Chords everywhere",
     "ear": "Ear training",
@@ -22,7 +22,8 @@
     "solo": "Solo study",
     "tools": "Tuner and metronome",
     "notesHint": "Find any note on the neck, fast",
-    "toolsHint": "Tune up, keep time"
+    "toolsHint": "Tune up, keep time",
+    "improvHint": "Play over the band and see the chord on the neck"
   },
   "explorer": {
     "key": "Key",
@@ -249,5 +250,80 @@
     "timingResult": "Your delay: {{ms}} ms. Saved.",
     "timingRetry": "Not enough steady taps. Try again.",
     "spaceHint": "Space bar: start / stop"
+  },
+  "jam": {
+    "play": "Play",
+    "stop": "Stop",
+    "surprise": "Surprise me",
+    "next": "next {{chord}}",
+    "bar": "Bar {{bar}} of {{bars}}",
+    "summary": "{{key}}, {{style}}, {{bpm}} bpm.",
+    "playWith": "Play with {{scale}}.",
+    "major": "major",
+    "minor": "minor",
+    "legendHome": "{{note}} = home. Land here to sound finished.",
+    "legendChord": "Notes of {{chord}}, the chord playing now. Land on these and you sound in tune with the band.",
+    "legendScale": "Other notes that fit. Use them to move between the yellow ones.",
+    "legendBlue": "Blue notes: gritty on purpose. Bend into them or slide past.",
+    "legendAvoid": "Avoid notes: a half step above a chord note. Pass through, don't stop on them.",
+    "legendAvoidSimple": "Grey = sounds tense over this chord. Pass through, don't stop on it.",
+    "legendNext": "Purple = the next chord is coming. Aim for these.",
+    "wheels": "Training wheels",
+    "wheelModes": {
+      "map": "Full map",
+      "chordTones": "Chord notes only",
+      "home": "Home notes only",
+      "off": "Off, just listen"
+    },
+    "position": "Hand position",
+    "box": "{{n}} (fret {{fret}})",
+    "scale": "Notes to play",
+    "groove": "Groove",
+    "chords": "Chords",
+    "tempo": "Tempo",
+    "slower": "Slower",
+    "faster": "Faster",
+    "mix": "Mix",
+    "channels": {
+      "drums": "Drums",
+      "bass": "Bass",
+      "chords": "Chords"
+    },
+    "headphones": "Tip: headphones or a speaker you can turn up help you hear yourself over the band.",
+    "styles": {
+      "rock": "Rock",
+      "blues": "Blues shuffle",
+      "funk": "Funk",
+      "pop": "Pop",
+      "ballad": "Ballad",
+      "reggae": "Reggae",
+      "jazz": "Jazz-ish"
+    },
+    "progressions": {
+      "popAnthem": "Pop anthem",
+      "sadTurn": "Sad turn",
+      "threeChord": "Three chords",
+      "doowop": "Fifties",
+      "twelveBar": "12-bar blues",
+      "quickChange": "Quick-change blues",
+      "minorRock": "Minor rock",
+      "epicMinor": "Epic minor",
+      "minorBlues": "Minor blues",
+      "dorianVamp": "Dorian vamp",
+      "oneChordFunk": "One-chord groove",
+      "mixoRock": "Classic rock",
+      "reggaeTwo": "Two-chord skank",
+      "twoFiveOne": "Jazz II-V-I",
+      "minorTwoFive": "Minor II-V-I"
+    },
+    "legendTitle": "What do the colours mean?",
+    "short": {
+      "home": "home",
+      "chord": "chord now",
+      "scale": "fits",
+      "blue": "blue note",
+      "avoid": "tense",
+      "next": "next chord"
+    }
   }
 }

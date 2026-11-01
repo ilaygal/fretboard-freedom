@@ -49,7 +49,7 @@ Client-only React PWA, layered. Each layer only imports the layers below it.
 | Audio | `src/audio` | Tone.js engine, instruments, pitch detection | Tone, pitchy, theory |
 | Data | `src/data` | Dexie schema, repository interfaces + Dexie implementations, backup | dexie |
 | Content | `src/content` | Progressions, styles, challenges, onboarding options as data | theory types |
-| Domain | `src/domain` | Drill engine, spaced repetition, planner (Phase 2+) | theory, data, content |
+| Domain | `src/domain` | Drill engine, spaced repetition, backing-track arranger, planner | theory, data, content |
 | UI kit | `src/components` | Shared `Fretboard`, buttons, chips | theory types |
 | Modules | `src/modules/*` | One folder per feature | everything above |
 | App | `src/app` | Shell, routes, profile context | everything |
@@ -67,6 +67,22 @@ Key decisions:
   (`public/samples/guitar-acoustic`, 12 notes a minor third apart, repitched by `Tone.Sampler`) with a pluck-synth
   fallback while they load. Everything goes through `getMaster()`. The metronome runs on Tone's transport and
   reports ticks via `Tone.Draw` so visuals stay in sync.
+- **Backing tracks:** styles (drum/bass/comp patterns as strings, 16-step straight or 12-step triplet grid) and
+  progressions (roman numerals, one per bar) are data in `src/content/backing.ts`. Numerals always count from the
+  home note's major scale (minor keys write i, bIII, bVI, bVII); `src/theory/progression.ts` resolves them with
+  key-aware spelling. `src/domain/backing/arrange.ts` turns style + chords into timed notes in transport ticks
+  (PPQ 192, tempo-independent): bass from chord tones in B0-D#2, comp as close voicings with voice leading around
+  middle C. `src/audio/backing/player.ts` (`backing`) plays them with synth drums, a mono-synth bass and an FM
+  electric piano on a looping `Tone.Part`, with per-channel mix (`settings.backingMix`), and reports every beat
+  through `Tone.Draw`. Starting the band stops the metronome (they share the transport).
+- **Jam screens** (`src/modules/jam`): `/play` (Free Play) opens with a random jam (`randomJam`, leaning to the
+  player's liked styles and guitar-friendly keys), so Home -> Free Play -> Play is two taps. `/improv` (Improv Lab)
+  keeps the same jam and adds hand positions (neck zooms to the box), training wheels (full map, chord notes only,
+  home notes only, off) and label modes. During the last beat of a bar, the next chord's new notes show as `target`.
+  Note roles over the current chord come from `roleOverChord` (`src/theory/harmony.ts`).
+- **Scale positions** (`src/theory/positions.ts`): built by walking up the scale string by string, 2 notes per
+  string for pentatonic boxes (blues = minor pentatonic box plus the b5 inside its span) and 3 per string for
+  seven-note scales. Following pitch makes the shapes right in any tuning. CAGED scale shapes come with Phase 4.
 - **Pitch detection:** `listenToMic()` uses an `AnalyserNode` (fftSize 4096) polled ~30x/s with pitchy (McLeod).
   An AudioWorklet was the plan, but the analyser is simpler and reliable on iOS; revisit only if latency matters.
   Mic constraints turn off echo cancellation, noise suppression and AGC. `PitchStabilizer` turns noisy frames into
@@ -110,7 +126,7 @@ Pages (repo Settings, Pages, Source: GitHub Actions).
 ## Phase status
 - [x] Phase 1: foundation (theory core, fretboard, profile/settings/backup, onboarding, neck explorer, PWA, CI/deploy)
 - [x] Phase 2: Fretboard Mastery (name/find/find-all/play-by-mic, levels, heatmap, octave shapes), tuner, metronome, timing check, drill engine, spaced repetition
-- [ ] Phase 3: backing-track engine, Free Play, Improv Lab core
+- [x] Phase 3: backing-track engine, Free Play, Improv Lab core (CAGED scale shapes moved to Phase 4)
 - [ ] Phase 4: Chords Everywhere (triads first, CAGED, drop-2/3, voice leading, chord builder, lookup tools)
 - [ ] Phase 5: improv challenges, mic analysis, lick library, recording
 - [ ] Phase 6: Ear Training

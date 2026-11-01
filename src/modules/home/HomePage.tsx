@@ -3,10 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { useProfile } from '@/app/profile';
 
 const READY = [
+  { id: 'improv', to: '/improv', hint: 'improvHint' },
+  { id: 'explore', to: '/explore', hint: 'exploreHint' },
   { id: 'fretboardMastery', to: '/notes', hint: 'notesHint' },
   { id: 'tools', to: '/tools', hint: 'toolsHint' },
 ] as const;
-const SOON = ['freePlay', 'chords', 'improv', 'ear', 'solo'] as const;
+const SOON = ['chords', 'ear', 'solo'] as const;
 
 export function HomePage() {
   const { t } = useTranslation();
@@ -29,11 +31,11 @@ export function HomePage() {
       </header>
 
       <Link
-        to="/explore"
+        to="/play"
         className="block rounded-3xl bg-spot p-6 text-stage shadow-[0_0_60px_-15px] shadow-spot active:scale-[0.99]"
       >
-        <div className="text-2xl font-black">{t('home.explore')}</div>
-        <div className="font-medium opacity-80">{t('home.exploreHint')}</div>
+        <div className="text-3xl font-black">▶ {t('home.freePlay')}</div>
+        <div className="font-medium opacity-80">{t('home.freePlayHint')}</div>
       </Link>
 
       <div className="grid grid-cols-2 gap-3">

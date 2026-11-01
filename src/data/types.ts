@@ -23,6 +23,8 @@ export interface Settings {
   latencyMs: number;
   /** Mic drills: require the exact octave, not just the note name. */
   micExactOctave: boolean;
+  /** Backing-track mix levels, 0 to 1. */
+  backingMix: { drums: number; bass: number; chords: number };
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -38,6 +40,7 @@ export const DEFAULT_SETTINGS: Settings = {
   roleColors: {},
   latencyMs: 0,
   micExactOctave: false,
+  backingMix: { drums: 0.8, bass: 0.8, chords: 0.6 },
 };
 
 export interface Background {
@@ -58,7 +61,9 @@ export interface Profile {
 }
 
 export function withDefaults(settings: Partial<Settings> | undefined): Settings {
-  return { ...DEFAULT_SETTINGS, ...settings, roleColors: { ...DEFAULT_SETTINGS.roleColors, ...settings?.roleColors } };
+  return { ...DEFAULT_SETTINGS, ...settings, roleColors: { ...DEFAULT_SETTINGS.roleColors, ...settings?.roleColors },
+    backingMix: { ...DEFAULT_SETTINGS.backingMix, ...settings?.backingMix },
+  };
 }
 
 /** One answered drill question (or one tap in a multi-target question). */
