@@ -8,9 +8,9 @@ describe('guitar recordings', () => {
     expect(sampleFile(74)).toBe('D5.mp3');
   });
 
-  it('has a recording for every semitone from D2 to D5', () => {
-    expect(SAMPLE_MIDIS).toHaveLength(37);
-    const files = Object.keys(import.meta.glob('/public/samples/guitar-acoustic/*.mp3')).map((f) => f.split('/').pop());
+  it('has a recording for every semitone from D2 to E6', () => {
+    expect(SAMPLE_MIDIS).toHaveLength(51);
+    const files = Object.keys(import.meta.glob('/public/samples/guitar/*.mp3')).map((f) => f.split('/').pop());
     for (const m of SAMPLE_MIDIS) expect(files).toContain(sampleFile(m));
   });
 });

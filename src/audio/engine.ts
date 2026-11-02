@@ -38,7 +38,7 @@ let room: import('tone').Reverb | null = null;
 export function getRoom(): import('tone').Reverb | null {
   const out = getMaster();
   if (!tone || !out) return null;
-  room ??= new tone.Reverb({ decay: 1.6, preDelay: 0.012, wet: 1 }).connect(out);
+  room ??= new tone.Reverb({ decay: 1.3, preDelay: 0.02, wet: 1 }).connect(out);
   return room;
 }
 

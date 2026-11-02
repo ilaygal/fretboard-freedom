@@ -1,12 +1,12 @@
 import { getMaster, getRoom, getTone, unlockAudio } from '../engine';
 
 /**
- * Acoustic guitar from real recordings: one sample per semitone from D2 to D5, so a note is
- * almost never pitch-shifted (only above D5). Built by scripts/prepare-guitar-samples.sh.
+ * Guitar recordings: one sample per semitone from D2 to E6 (fret 24 on the high string), so a note
+ * is never pitch-shifted. Built by scripts/prepare-guitar-samples.sh (source in SOURCE.txt).
  */
 const NAMES = ['C', 'Cs', 'D', 'Ds', 'E', 'F', 'Fs', 'G', 'Gs', 'A', 'As', 'B'];
 const LOWEST = 38; // D2
-const HIGHEST = 74; // D5
+const HIGHEST = 88; // E6
 
 export function sampleFile(midi: number): string {
   return `${NAMES[midi % 12]}${Math.floor(midi / 12) - 1}.mp3`;
@@ -29,7 +29,7 @@ export function loadGuitarBuffers(): Promise<Buffers> | null {
   if (!loading) loadStarted = performance.now();
   loading ??= Promise.all(
     SAMPLE_MIDIS.map((m) =>
-      new tone.ToneAudioBuffer().load(`${import.meta.env.BASE_URL}samples/guitar-acoustic/${sampleFile(m)}`).then((b) => [m, b] as const),
+      new tone.ToneAudioBuffer().load(`${import.meta.env.BASE_URL}samples/guitar/${sampleFile(m)}`).then((b) => [m, b] as const),
     ),
   ).then((pairs) => {
     buffers = Object.fromEntries(pairs);
@@ -51,13 +51,15 @@ export function guitarBuffers(): Buffers | null {
  * little room is added, like a mic a short way from the guitar.
  */
 export function makeGuitarSampler(tone: ToneNS, b: Buffers, out: import('tone').ToneAudioNode, opts: { room?: number; tone?: number } = {}) {
-  const shelf = new tone.Filter({ type: 'highshelf', frequency: 4500, gain: -4 });
+  // The recordings are already warmed (see the prepare script); this only trims what is left up top.
+  const shelf = new tone.Filter({ type: 'highshelf', frequency: 5000, gain: -2 });
   const air = new tone.Filter({ type: 'lowpass', frequency: opts.tone ?? 9000, rolloff: -12 });
-  const sampler = new tone.Sampler({ urls: b, release: 0.9, attack: 0 });
+  // Short release: a note stops like a string being touched; how long it rings is set by its duration.
+  const sampler = new tone.Sampler({ urls: b, release: 0.12, attack: 0 });
   sampler.chain(shelf, air, out);
   const room = opts.room === 0 ? null : getRoom();
   if (room) {
-    const send = new tone.Gain(opts.room ?? 0.22).connect(room);
+    const send = new tone.Gain(opts.room ?? 0.2).connect(room);
     air.connect(send);
   }
   return sampler;

@@ -146,7 +146,7 @@ export class BackingPlayer {
           // Strum low to high, a few milliseconds per string, like a pick across the strings.
           [...ev.midis]
             .sort((a, b) => a - b)
-            .forEach((m, i) => g.triggerAttackRelease(tone.Frequency(m, 'midi').toFrequency(), dur + 0.15, time + i * 0.012, ev.velocity * (0.82 + i * 0.03)));
+            .forEach((m, i) => g.triggerAttackRelease(tone.Frequency(m, 'midi').toFrequency(), dur + 0.5, time + i * 0.012, ev.velocity * (0.82 + i * 0.03)));
         } else {
           inst.comp.pad.triggerAttackRelease(
             ev.midis.map((m) => tone.Frequency(m, 'midi').toFrequency()),

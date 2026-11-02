@@ -19,4 +19,4 @@ See [CLAUDE.md](CLAUDE.md) for architecture, conventions and the phase plan.
 
 ## Credits
 
-Acoustic guitar samples from [tonejs-instruments](https://github.com/nbrosowsky/tonejs-instruments) by Nicholas Brosowsky (CC BY 3.0).
+Guitar samples: the Musyng Kite soundfont (CC BY-SA 3.0), pre-rendered by [gleitz/midi-js-soundfonts](https://github.com/gleitz/midi-js-soundfonts). The files in `public/samples/guitar` are shared under the same licence.
