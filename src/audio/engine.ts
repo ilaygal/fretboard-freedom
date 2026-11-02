@@ -29,6 +29,19 @@ export function getMaster(): import('tone').Volume | null {
   return master;
 }
 
+let room: import('tone').Reverb | null = null;
+
+/**
+ * A small shared room (reverb, fully wet) feeding the master bus. Instruments send a little of
+ * their signal here so they sound like they are played in a room instead of straight into a wire.
+ */
+export function getRoom(): import('tone').Reverb | null {
+  const out = getMaster();
+  if (!tone || !out) return null;
+  room ??= new tone.Reverb({ decay: 1.6, preDelay: 0.012, wet: 1 }).connect(out);
+  return room;
+}
+
 /**
  * iOS mutes Web Audio when the ring/silent switch is on, unless the page asks for "playback".
  * Safari 16.4+ supports navigator.audioSession.

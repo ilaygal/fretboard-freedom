@@ -1,4 +1,5 @@
-import { getMaster, getTone, unlockAudio } from '../engine';
+import { getMaster, getRoom, getTone, unlockAudio } from '../engine';
+import { guitarBuffers, loadGuitarBuffers, makeGuitarSampler } from '../instruments/guitar';
 import { metronome } from '../metronome';
 
 /** The instruments of a backing band. */
@@ -41,7 +42,8 @@ function toDb(level: number): number {
 type Tone = typeof import('tone');
 
 /**
- * Plays a looping backing track: synth drums, bass and electric-piano chords.
+ * Plays a looping backing track: synth drums, a round synth bass and strummed acoustic-guitar chords
+ * (a soft pad stands in for the guitar until its recordings have loaded).
  * Listeners hear about every beat in sync with the sound (Tone.Draw), so the neck can follow the chords.
  */
 export class BackingPlayer {
@@ -67,6 +69,9 @@ export class BackingPlayer {
       bass: new tone.Volume(toDb(this.mix.bass)).connect(out),
       chords: new tone.Volume(toDb(this.mix.chords)).connect(out),
     };
+    // The chords get a little room too, after their fader so muting them mutes the echo as well.
+    const room = getRoom();
+    if (room) channels.chords.connect(new tone.Gain(0.25).connect(room));
     const kick = new tone.MembraneSynth({
       pitchDecay: 0.03,
       octaves: 6,
@@ -83,26 +88,35 @@ export class BackingPlayer {
     const ride = new tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.001, decay: 0.35, sustain: 0 } }).connect(
       hatFilter,
     );
-    ride.volume.value = -8;
-    hat.volume.value = -10;
+    ride.volume.value = -11;
+    hat.volume.value = -14;
     snare.volume.value = -4;
     const bass = new tone.MonoSynth({
-      oscillator: { type: 'sawtooth' },
-      envelope: { attack: 0.004, decay: 0.25, sustain: 0.7, release: 0.08 },
-      filter: { Q: 1, type: 'lowpass', rolloff: -24 },
-      filterEnvelope: { attack: 0.004, decay: 0.18, sustain: 0.35, release: 0.1, baseFrequency: 90, octaves: 2.6 },
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.006, decay: 0.3, sustain: 0.6, release: 0.12 },
+      filter: { Q: 0.7, type: 'lowpass', rolloff: -24 },
+      filterEnvelope: { attack: 0.004, decay: 0.2, sustain: 0.4, release: 0.15, baseFrequency: 160, octaves: 1.6 },
     }).connect(channels.bass);
-    bass.volume.value = -3;
-    const comp = new tone.PolySynth(tone.FMSynth, {
-      harmonicity: 3,
-      modulationIndex: 6,
-      oscillator: { type: 'sine' },
-      envelope: { attack: 0.004, decay: 1.4, sustain: 0.25, release: 0.6 },
-      modulation: { type: 'sine' },
-      modulationEnvelope: { attack: 0.002, decay: 0.4, sustain: 0.1, release: 0.4 },
-    }).connect(channels.chords);
-    comp.maxPolyphony = 16;
-    comp.volume.value = -12;
+    bass.volume.value = 0;
+    // Until the guitar recordings arrive: a soft, warm pad (no bell-like FM tones).
+    const padFilter = new tone.Filter({ type: 'lowpass', frequency: 1400, rolloff: -24 }).connect(channels.chords);
+    const pad = new tone.PolySynth(tone.Synth, {
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.01, decay: 1.2, sustain: 0.2, release: 0.5 },
+    }).connect(padFilter);
+    pad.maxPolyphony = 16;
+    pad.volume.value = -14;
+    let guitar: import('tone').Sampler | null = null;
+    const withGuitar = () => {
+      const b = guitarBuffers();
+      if (b && !guitar) {
+        guitar = makeGuitarSampler(tone, b, channels.chords, { room: 0, tone: 6000 });
+        guitar.volume.value = -6;
+      }
+    };
+    withGuitar();
+    if (!guitar) void loadGuitarBuffers()?.then(withGuitar);
+    const comp = { pad, guitar: () => guitar };
     return { channels, kick, snare, hat, ride, bass, comp };
   }
 
@@ -126,14 +140,23 @@ export class BackingPlayer {
       case 'bass':
         inst.bass.triggerAttackRelease(tone.Frequency(ev.midis[0]!, 'midi').toFrequency(), dur, time, ev.velocity);
         break;
-      case 'comp':
-        inst.comp.triggerAttackRelease(
-          ev.midis.map((m) => tone.Frequency(m, 'midi').toFrequency()),
-          dur,
-          time,
-          ev.velocity * 0.8,
-        );
+      case 'comp': {
+        const g = inst.comp.guitar();
+        if (g) {
+          // Strum low to high, a few milliseconds per string, like a pick across the strings.
+          [...ev.midis]
+            .sort((a, b) => a - b)
+            .forEach((m, i) => g.triggerAttackRelease(tone.Frequency(m, 'midi').toFrequency(), dur + 0.15, time + i * 0.012, ev.velocity * (0.82 + i * 0.03)));
+        } else {
+          inst.comp.pad.triggerAttackRelease(
+            ev.midis.map((m) => tone.Frequency(m, 'midi').toFrequency()),
+            dur,
+            time,
+            ev.velocity * 0.8,
+          );
+        }
         break;
+      }
     }
   }
 
@@ -213,7 +236,8 @@ export class BackingPlayer {
     const transport = tone.getTransport();
     transport.stop();
     transport.position = 0;
-    this.inst?.comp.releaseAll();
+    this.inst?.comp.pad.releaseAll();
+    this.inst?.comp.guitar()?.releaseAll();
   }
 
   stop() {
