@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import fc from 'fast-check';
 import { TUNINGS, STANDARD_TUNING, openMidi, parseTuning, describeTuning } from './tuning';
-import { allPositions, midiAt, pitchClassAt, positionsOfMidi, positionsOfPitchClasses } from './fretboard';
+import { windowAround, allPositions, midiAt, pitchClassAt, positionsOfMidi, positionsOfPitchClasses } from './fretboard';
 import { noteLabel } from './labels';
 
 describe('tunings', () => {
@@ -80,5 +80,13 @@ describe('labels', () => {
     expect(noteLabel('degree', 'C', 'R')).toBe('1');
     expect(noteLabel('solfege', 'G', '5')).toBe('Sol');
     expect(noteLabel('none', 'G', '5')).toBe('');
+  });
+});
+
+describe('windowAround', () => {
+  it('shows a span with a fret below and two above, inside the neck', () => {
+    expect(windowAround({ from: 5, to: 8 }, 22)).toEqual({ from: 4, to: 10 });
+    expect(windowAround({ from: 0, to: 3 }, 22)).toEqual({ from: 0, to: 5 });
+    expect(windowAround({ from: 18, to: 21 }, 22)).toEqual({ from: 17, to: 22 });
   });
 });

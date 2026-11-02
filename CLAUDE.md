@@ -82,7 +82,18 @@ Key decisions:
   Note roles over the current chord come from `roleOverChord` (`src/theory/harmony.ts`).
 - **Scale positions** (`src/theory/positions.ts`): built by walking up the scale string by string, 2 notes per
   string for pentatonic boxes (blues = minor pentatonic box plus the b5 inside its span) and 3 per string for
-  seven-note scales. Following pitch makes the shapes right in any tuning. CAGED scale shapes come with Phase 4.
+  seven-note scales. Following pitch makes the shapes right in any tuning. CAGED scale shapes are planned for Phase 8.
+- **Chord voicings** (`src/theory/voicings.ts`): triads (close, every inversion, adjacent string sets) and drop-2 /
+  drop-3 shapes are found by pitch with `placeInOrder` (each note the next higher occurrence on the next string,
+  stretch at most `MAX_STRETCH` = 4 frets), so they work in any tuning. CAGED shapes are templates and only appear
+  when `hasStandardIntervals(tuning)` (standard, Eb, D standard); other tunings show triads and drop shapes.
+  `voiceLeadPath` picks one voicing per chord inside a fret window by dynamic programming (least total voice
+  movement, small penalty for changing string set). `nameChord` names tapped notes; `transposeSymbol` moves chords.
+- **Chords screen** (`src/modules/chords`, `/chords`): Find a chord (shape families, step through every voicing,
+  other places greyed), Play a progression (band + voice-led shapes inside a 5-fret window, next shape and voice
+  movement lines on the last beat, "names only" to play from memory), Name my chord (tap one note per string),
+  Change key (transpose with a capo hint). The band logic is shared through `useBand` (`src/app/useBand.ts`) and
+  the sticky now/next bar is `StageBar` (`src/components/stage`).
 - **Pitch detection:** `listenToMic()` uses an `AnalyserNode` (fftSize 4096) polled ~30x/s with pitchy (McLeod).
   An AudioWorklet was the plan, but the analyser is simpler and reliable on iOS; revisit only if latency matters.
   Mic constraints turn off echo cancellation, noise suppression and AGC. `PitchStabilizer` turns noisy frames into
@@ -126,10 +137,10 @@ Pages (repo Settings, Pages, Source: GitHub Actions).
 ## Phase status
 - [x] Phase 1: foundation (theory core, fretboard, profile/settings/backup, onboarding, neck explorer, PWA, CI/deploy)
 - [x] Phase 2: Fretboard Mastery (name/find/find-all/play-by-mic, levels, heatmap, octave shapes), tuner, metronome, timing check, drill engine, spaced repetition
-- [x] Phase 3: backing-track engine, Free Play, Improv Lab core (CAGED scale shapes moved to Phase 4)
-- [ ] Phase 4: Chords Everywhere (triads first, CAGED, drop-2/3, voice leading, chord builder, lookup tools)
+- [x] Phase 3: backing-track engine, Free Play, Improv Lab core (CAGED scale shapes moved to Phase 8)
+- [x] Phase 4: Chords Everywhere (triads, CAGED, drop-2/3, voice-led progression trainer, chord builder, transpose; circle of fifths and CAGED scale shapes moved to Phase 8)
 - [ ] Phase 5: improv challenges, mic analysis, lick library, recording
 - [ ] Phase 6: Ear Training
 - [ ] Phase 7: Solo Study (alphaTab)
-- [ ] Phase 8: planner, progress, PWA polish, Hebrew
+- [ ] Phase 8: planner, progress, PWA polish, Hebrew, circle of fifths, CAGED scale shapes
 - [ ] Phase 9: Transcription Assistant

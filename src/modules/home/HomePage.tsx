@@ -4,11 +4,12 @@ import { useProfile } from '@/app/profile';
 
 const READY = [
   { id: 'improv', to: '/improv', hint: 'improvHint' },
+  { id: 'chords', to: '/chords', hint: 'chordsHint' },
   { id: 'explore', to: '/explore', hint: 'exploreHint' },
   { id: 'fretboardMastery', to: '/notes', hint: 'notesHint' },
   { id: 'tools', to: '/tools', hint: 'toolsHint' },
 ] as const;
-const SOON = ['chords', 'ear', 'solo'] as const;
+const SOON = ['ear', 'solo'] as const;
 
 export function HomePage() {
   const { t } = useTranslation();

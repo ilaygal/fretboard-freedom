@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Fretboard } from '@/components/fretboard';
-import { Chip, ChipRow, PageHeader, PrimaryButton, SecondaryButton } from '@/components/ui';
+import { Chip, ChipRow, PageHeader, SecondaryButton } from '@/components/ui';
 import { useProfile } from '@/app/profile';
 import { useMediaQuery } from '@/app/useMediaQuery';
-import { backing, type Position } from '@/audio/backing/player';
+import { useBand } from '@/app/useBand';
+import { StageBar, prettySymbol } from '@/components/stage/StageBar';
 import { playMidi } from '@/audio/play';
 import { PROGRESSIONS, STYLES, getProgression, getStyle } from '@/content/backing';
 import { FLAT_NAMES, midiAt, preferredTonic, prettyNote, scalePositions, type FretPos, type LabelMode } from '@/theory';
@@ -35,8 +36,6 @@ const ROLE_BG: Record<string, string> = {
 /** The last jam, so moving between Free Play and the Improv Lab keeps the same groove. */
 let remembered: JamChoice | null = null;
 
-const prettySymbol = (s: string) => prettyNote(s.match(/^[A-G][#b]?/)?.[0] ?? s) + s.replace(/^[A-G][#b]?/, '');
-
 export function JamPage({ lab }: { lab: boolean }) {
   const { t } = useTranslation();
   const { profile, settings, tuning, updateSettings } = useProfile();
@@ -50,8 +49,6 @@ export function JamPage({ lab }: { lab: boolean }) {
     remembered = c;
     return c;
   });
-  const [playing, setPlaying] = useState(false);
-  const [pos, setPos] = useState<Position>({ bar: 0, beat: 0 });
   const [wheels, setWheels] = useState<Wheels>('map');
   const [positionIndex, setPositionIndex] = useState<number | null>(lab ? 1 : null);
   const [mix, setMix] = useState(settings.backingMix);
@@ -60,6 +57,7 @@ export function JamPage({ lab }: { lab: boolean }) {
   const style = getStyle(choice.styleId);
   const prog = getProgression(choice.progressionId);
   const { chords, track } = useMemo(() => jamTrack(choice, strict), [choice, strict]);
+  const { playing, pos, toggle } = useBand(track, choice.bpm, mix);
   const { now, next } = chordAt(chords, pos.bar);
   const changeComing = playing && pos.beat === 3 && next.symbol !== now.symbol;
 
@@ -85,61 +83,21 @@ export function JamPage({ lab }: { lab: boolean }) {
     [tuning, range, tonic, choice.scale, now, next, changeComing, settings.labelMode, wheels, position, strict],
   );
 
-  // Follow the band.
-  useEffect(() => backing.onPosition(setPos), []);
-  useEffect(() => () => backing.stop(), []);
-
   const update = useCallback((c: JamChoice) => {
     remembered = c;
     setChoice(c);
   }, []);
-
-  // A new progression, key or groove restarts the band from bar 1; tempo just changes speed.
-  const lastTrack = useRef(track);
-  useEffect(() => {
-    if (lastTrack.current === track) return;
-    lastTrack.current = track;
-    setPos({ bar: 0, beat: 0 });
-    if (backing.playing) backing.play(track, choice.bpm);
-  }, [track, choice.bpm]);
-  useEffect(() => {
-    if (backing.playing) backing.setTempo(choice.bpm);
-  }, [choice.bpm]);
-
-  const toggle = useCallback(() => {
-    if (backing.playing) {
-      backing.stop();
-      setPlaying(false);
-      setPos({ bar: 0, beat: 0 });
-    } else {
-      backing.setMix(mix);
-      backing.play(track, choice.bpm);
-      setPlaying(true);
-    }
-  }, [track, choice.bpm, mix]);
 
   const surprise = useCallback(() => {
     update(randomJam(Math.random, profile?.background.styles ?? [], choice));
     setPositionIndex(lab ? 1 : null);
   }, [choice, lab, profile, update]);
 
-  // Space = play/pause.
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.code !== 'Space' || e.target instanceof HTMLInputElement) return;
-      e.preventDefault();
-      toggle();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [toggle]);
-
   // Mix: apply at once, save after the slider settles.
   const saveTimer = useRef<number | undefined>(undefined);
   const changeMix = (ch: keyof typeof mix, v: number) => {
     const m = { ...mix, [ch]: v };
     setMix(m);
-    backing.setMix(m);
     window.clearTimeout(saveTimer.current);
     saveTimer.current = window.setTimeout(() => void updateSettings({ backingMix: m }), 500);
   };
@@ -160,34 +118,16 @@ export function JamPage({ lab }: { lab: boolean }) {
     <div className="pb-16">
       <PageHeader title={t(lab ? 'home.improv' : 'home.freePlay')} />
 
-      {/* Stage: what's playing now, always in view */}
-      <div className="sticky top-[73px] z-10 border-b border-line bg-stage/95 px-4 py-3 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center gap-3">
-          <div className="min-w-0 flex-1" aria-live="polite">
-            <div className="flex items-baseline gap-3">
-              <span className="text-5xl font-black tabular-nums tracking-tight" data-testid="chord-now">
-                {prettySymbol(now.symbol)}
-              </span>
-              <span className={`text-lg font-bold ${changeComing ? 'text-role-target' : 'text-muted'}`}>
-                {t('jam.next', { chord: prettySymbol(next.symbol) })}
-              </span>
-            </div>
-            <div className="mt-1 flex items-center gap-2" aria-hidden="true">
-              <span className="text-sm text-muted tabular-nums">
-                {t('jam.bar', { bar: pos.bar + 1, bars: chords.length })}
-              </span>
-              <span className="flex gap-1">
-                {[0, 1, 2, 3].map((b) => (
-                  <span key={b} className={`size-2.5 rounded-full ${playing && pos.beat === b ? (b === 0 ? 'bg-spot' : 'bg-ink') : 'bg-line'}`} />
-                ))}
-              </span>
-            </div>
-          </div>
-          <PrimaryButton onClick={toggle} className="min-w-28" aria-keyshortcuts="Space">
-            {playing ? t('jam.stop') : t('jam.play')}
-          </PrimaryButton>
-        </div>
-      </div>
+      <StageBar
+        now={now.symbol}
+        next={next.symbol}
+        changeComing={changeComing}
+        bar={pos.bar}
+        bars={chords.length}
+        beat={pos.beat}
+        playing={playing}
+        onToggle={toggle}
+      />
 
       <div className="mx-auto max-w-6xl space-y-4 px-4 pt-4">
         <div className="flex items-center gap-3">

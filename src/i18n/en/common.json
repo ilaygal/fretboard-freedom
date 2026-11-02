@@ -23,7 +23,8 @@
     "tools": "Tuner and metronome",
     "notesHint": "Find any note on the neck, fast",
     "toolsHint": "Tune up, keep time",
-    "improvHint": "Play over the band and see the chord on the neck"
+    "improvHint": "Play over the band and see the chord on the neck",
+    "chordsHint": "Every chord, everywhere on the neck"
   },
   "explorer": {
     "key": "Key",
@@ -325,5 +326,71 @@
       "avoid": "tense",
       "next": "next chord"
     }
+  },
+  "chords": {
+    "tabs": {
+      "find": "Find a chord",
+      "trainer": "Play a progression",
+      "builder": "Name my chord",
+      "transpose": "Change key"
+    },
+    "root": "Chord",
+    "type": "Kind",
+    "shapes": "Shapes",
+    "types": {
+      "maj": "Major",
+      "min": "Minor",
+      "7": "7",
+      "maj7": "Maj7",
+      "m7": "m7",
+      "sus2": "Sus2",
+      "sus4": "Sus4",
+      "dim": "Dim",
+      "aug": "Aug",
+      "m7b5": "m7♭5",
+      "dim7": "Dim7",
+      "6": "6",
+      "m6": "m6",
+      "add9": "Add9"
+    },
+    "kinds": {
+      "triad": "Small (3 strings)",
+      "caged": "Full (CAGED)",
+      "drop2": "4 strings together",
+      "drop3": "Bass + 3 strings"
+    },
+    "kindHints": {
+      "triad": "Three notes on three neighbouring strings. Small, fast, and they're everywhere: the key to playing chords anywhere.",
+      "caged": "The five open-chord shapes (C, A, G, E, D) moved up the neck. Ones marked \"reference shape\" are awkward to play; use them as a map.",
+      "drop2": "Four notes on four neighbouring strings. The classic sound for 7th chords.",
+      "drop3": "Bass note on string 6 or 5, skip a string, then three more. Full and warm."
+    },
+    "prev": "Previous shape",
+    "next": "Next shape",
+    "which": "{{n}} of {{of}}, from fret {{from}}",
+    "shapeName": "{{shape}} shape",
+    "reference": "reference shape",
+    "lowest": "lowest note {{note}}",
+    "none": "No shape fits this tuning here.",
+    "hear": "Hear it",
+    "zoomIn": "Zoom in",
+    "greyHint": "Grey dots: the same chord's notes elsewhere. Every group of them is another place to play it.",
+    "trainerIntro": "Keep your hand in one spot and play the whole progression there. The band plays, the neck shows the closest shape for each chord.",
+    "window": "Your spot",
+    "help": "Help",
+    "showShapes": "Show shapes",
+    "namesOnly": "Names only",
+    "namesOnlyHint": "No dots now: play each chord inside the box from memory. Stuck? Switch back to Show shapes.",
+    "builderIntro": "Tap notes on the neck (one per string) and see what chord they make.",
+    "alsoCalled": "Also: {{names}}",
+    "noName": "Not a chord I know. Try adding or moving a note.",
+    "tapMore": "Tap at least two notes.",
+    "clear": "Clear",
+    "yourChords": "Your chords",
+    "moveBy": "Move by",
+    "down": "Lower",
+    "up": "Higher",
+    "semitoneHint": "Each step is one fret. +2 moves everything two frets up (higher).",
+    "capoHint": "Tip: put a capo on fret {{fret}} and play these shapes, and it sounds like your original chords."
   }
 }
