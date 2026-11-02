@@ -63,17 +63,22 @@ Key decisions:
 - **Data access only through repositories** (`repos.profiles`, `repos.backup`), so a synced backend (Supabase) can be
   added later. Settings are merged with `DEFAULT_SETTINGS` on read, so new settings need no migration.
 - **Audio:** Tone.js is preloaded at startup; `unlockAudio()` runs on the first pointer/key event (iOS needs the
-  gesture). `playMidi()` (`src/audio/play.ts`) is the tap-to-hear entry point; it uses sampled acoustic guitar
-  (`public/samples/guitar-acoustic`, 12 notes a minor third apart, repitched by `Tone.Sampler`) with a pluck-synth
-  fallback while they load. Everything goes through `getMaster()`. The metronome runs on Tone's transport and
+  gesture). `playMidi()` (`src/audio/play.ts`) is the tap-to-hear entry point. It plays a classical (nylon) guitar, the player's choice by ear
+  over steel-string sets ("metallic", "sitar-like"): one recording per semitone D2-E6 (`public/samples/guitar`, source soundfont in `SOURCE.txt`, rebuilt by `scripts/prepare-guitar-samples.sh`), so notes are
+  not pitch-shifted (shifting made them sound thin and metallic). The recordings load once (`loadGuitarBuffers`) and
+  every guitar shares them (`makeGuitarSampler`: eased-off top end plus a little of the shared `getRoom()` reverb).
+  Taps made while they load wait up to ~0.6 s for them; only if loading is slow or fails does a soft triangle synth
+  stand in. Never use bright plucked/FM synths for guitar or chords: they read as metallic. Melodies go through
+  `phraseVoices` (`src/audio/phrasing.ts`): a note rings until its own string plays again, close notes on one string
+  are slurred and softer, timing and touch vary slightly; cutting each note at its written length sounded like a keyboard. Everything goes through `getMaster()`. The metronome runs on Tone's transport and
   reports ticks via `Tone.Draw` so visuals stay in sync.
 - **Backing tracks:** styles (drum/bass/comp patterns as strings, 16-step straight or 12-step triplet grid) and
   progressions (roman numerals, one per bar) are data in `src/content/backing.ts`. Numerals always count from the
   home note's major scale (minor keys write i, bIII, bVI, bVII); `src/theory/progression.ts` resolves them with
   key-aware spelling. `src/domain/backing/arrange.ts` turns style + chords into timed notes in transport ticks
   (PPQ 192, tempo-independent): bass from chord tones in B0-D#2, comp as close voicings with voice leading around
-  middle C. `src/audio/backing/player.ts` (`backing`) plays them with synth drums, a mono-synth bass and an FM
-  electric piano on a looping `Tone.Part`, with per-channel mix (`settings.backingMix`), and reports every beat
+  middle C. `src/audio/backing/player.ts` (`backing`) plays them with synth drums, a round triangle-wave bass and strummed
+  acoustic-guitar chords (the shared recordings, 12 ms per string) on a looping `Tone.Part`, with per-channel mix (`settings.backingMix`), and reports every beat
   through `Tone.Draw`. Starting the band stops the metronome (they share the transport).
 - **Jam screens** (`src/modules/jam`): `/play` (Free Play) opens with a random jam (`randomJam`, leaning to the
   player's liked styles and guitar-friendly keys), so Home -> Free Play -> Play is two taps. `/improv` (Improv Lab)
