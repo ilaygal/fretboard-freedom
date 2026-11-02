@@ -2,13 +2,23 @@ import { AppDatabase } from './db';
 import { DexieBackupRepository } from './repositories/dexie/backup';
 import { DexieProfileRepository } from './repositories/dexie/profiles';
 import { DexieAttemptRepository, DexieSrsRepository } from './repositories/dexie/practice';
-import type { AttemptRepository, BackupRepository, ProfileRepository, SrsRepository } from './repositories/types';
+import { DexieLickRepository, DexieRecordingRepository } from './repositories/dexie/library';
+import type {
+  AttemptRepository,
+  BackupRepository,
+  LickRepository,
+  ProfileRepository,
+  RecordingRepository,
+  SrsRepository,
+} from './repositories/types';
 
 export interface Repositories {
   profiles: ProfileRepository;
   backup: BackupRepository;
   attempts: AttemptRepository;
   srs: SrsRepository;
+  licks: LickRepository;
+  recordings: RecordingRepository;
 }
 
 export function createRepositories(db: AppDatabase): Repositories {
@@ -17,6 +27,8 @@ export function createRepositories(db: AppDatabase): Repositories {
     backup: new DexieBackupRepository(db),
     attempts: new DexieAttemptRepository(db),
     srs: new DexieSrsRepository(db),
+    licks: new DexieLickRepository(db),
+    recordings: new DexieRecordingRepository(db),
   };
 }
 
