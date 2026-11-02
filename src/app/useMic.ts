@@ -33,5 +33,7 @@ export function useMic(onFrame: (r: PitchReading) => void) {
   }, []);
 
   useEffect(() => () => listener.current?.stop(), []);
-  return { state, error, start, stop };
+  /** The live mic node (for recording), or null when off. */
+  const source = () => listener.current?.source ?? null;
+  return { state, error, start, stop, source };
 }

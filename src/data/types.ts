@@ -91,3 +91,26 @@ export interface SrsCard {
   lastReview: number;
   due: number;
 }
+
+/** A lick the player made. Notes are semitones from the key's home note, so it works in any key. */
+export interface SavedLick {
+  id: string;
+  profileId: string;
+  name: string;
+  /** Scale id the lick lives in (decides which hand positions it is shown in). */
+  scale: string;
+  notes: { st: number; dur: number }[];
+  tags: string[];
+  createdAt: number;
+}
+
+/** A recording of the player over the band. Kept on this device only (not in backups: audio is large). */
+export interface Recording {
+  id: string;
+  profileId: string;
+  at: number;
+  title: string;
+  mime: string;
+  blob: Blob;
+  seconds: number;
+}

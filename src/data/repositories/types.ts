@@ -1,4 +1,4 @@
-import type { Attempt, Background, Profile, Settings, SrsCard } from '../types';
+import type { Attempt, Background, Profile, Recording, SavedLick, Settings, SrsCard } from '../types';
 
 /**
  * Data access goes through these interfaces only. Today they are backed by IndexedDB (Dexie);
@@ -37,4 +37,17 @@ export interface SrsRepository {
   getMany(profileId: string, itemKeys: string[]): Promise<Map<string, SrsCard>>;
   put(card: SrsCard): Promise<void>;
   list(profileId: string): Promise<SrsCard[]>;
+}
+
+export interface LickRepository {
+  list(profileId: string): Promise<SavedLick[]>;
+  save(lick: SavedLick): Promise<void>;
+  remove(id: string): Promise<void>;
+}
+
+export interface RecordingRepository {
+  /** Newest first, without loading every blob into the list UI's memory more than needed. */
+  list(profileId: string): Promise<Recording[]>;
+  add(rec: Recording): Promise<void>;
+  remove(id: string): Promise<void>;
 }

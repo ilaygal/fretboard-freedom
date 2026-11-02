@@ -4,6 +4,8 @@ import { useProfile } from '@/app/profile';
 
 const READY = [
   { id: 'improv', to: '/improv', hint: 'improvHint' },
+  { id: 'challenges', to: '/challenges', hint: 'challengesHint' },
+  { id: 'licks', to: '/licks', hint: 'licksHint' },
   { id: 'chords', to: '/chords', hint: 'chordsHint' },
   { id: 'explore', to: '/explore', hint: 'exploreHint' },
   { id: 'fretboardMastery', to: '/notes', hint: 'notesHint' },

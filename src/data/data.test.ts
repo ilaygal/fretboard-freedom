@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { AppDatabase } from './db';
+import { AppDatabase, SCHEMA_VERSION } from './db';
 import { createRepositories, type Repositories } from './index';
 
 let db: AppDatabase;
@@ -94,6 +94,31 @@ describe('practice data', () => {
     await repos.attempts.add({ profileId: 'p', drillId: 'd', itemKey: 'k', correct: false, ms: 1, at: 1, input: 'mic' });
     const file = await repos.backup.exportAll();
     expect(file.tables.attempts?.length).toBe(1);
-    expect(file.schemaVersion).toBe(2);
+    expect(file.schemaVersion).toBe(SCHEMA_VERSION);
+  });
+});
+
+describe('licks and recordings', () => {
+  it('saves licks per profile and backs them up, but keeps recordings local', async () => {
+    const p = await repos.profiles.create({ name: 'p' });
+    await repos.licks.save({ id: 'l1', profileId: p.id, name: 'My lick', scale: 'minorPentatonic', notes: [{ st: 0, dur: 2 }], tags: [], createdAt: 1 });
+    await repos.licks.save({ id: 'l2', profileId: 'someone-else', name: 'x', scale: 'major', notes: [], tags: [], createdAt: 2 });
+    expect((await repos.licks.list(p.id)).map((l) => l.name)).toEqual(['My lick']);
+
+    await repos.recordings.add({ id: 'r1', profileId: p.id, at: 1, title: 'first', mime: 'audio/webm', blob: new Blob(['a']), seconds: 3 });
+    await repos.recordings.add({ id: 'r2', profileId: p.id, at: 2, title: 'second', mime: 'audio/webm', blob: new Blob(['b']), seconds: 4 });
+    expect((await repos.recordings.list(p.id)).map((r) => r.title)).toEqual(['second', 'first']);
+
+    const file = await repos.backup.exportAll();
+    expect(file.tables.licks).toHaveLength(2);
+    expect(file.tables.recordings).toBeUndefined();
+
+    // Importing a backup leaves this device's recordings alone.
+    await repos.backup.importAll(JSON.parse(JSON.stringify(file)));
+    expect(await repos.recordings.list(p.id)).toHaveLength(2);
+    await repos.recordings.remove('r1');
+    await repos.licks.remove('l1');
+    expect(await repos.recordings.list(p.id)).toHaveLength(1);
+    expect(await repos.licks.list(p.id)).toHaveLength(0);
   });
 });

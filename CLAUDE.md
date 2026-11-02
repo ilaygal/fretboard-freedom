@@ -94,6 +94,21 @@ Key decisions:
   movement lines on the last beat, "names only" to play from memory), Name my chord (tap one note per string),
   Change key (transpose with a capo hint). The band logic is shared through `useBand` (`src/app/useBand.ts`) and
   the sticky now/next bar is `StageBar` (`src/components/stage`).
+- **Improv challenges** (`src/modules/challenges`, `/challenges`): constraints are data in `src/content/challenges.ts`
+  (rule kinds: free, strings, chordTones, targetThird, fewNotes, callResponse, rhythmOnly, newPosition). While the band
+  plays, each mic note is stamped with bar/beat from `backing.ticksNow()` minus the detection delay (~130 ms +
+  `latencyMs`), and `analyseImprov` (`src/domain/improv/analysis.ts`) builds the report: chord-note %, in-key %, range,
+  low/mid/high register split, and a rule score. String and position rules are checked by pitch range (a mic hears
+  pitch, not strings). `verdict` turns it into 0-3 stars and at most two plain tips. Passed challenges are attempts
+  with drill id `improv.<id>`.
+- **Recording:** `src/audio/recorder.ts` records the master bus plus the mic through a MediaStreamDestination
+  (MediaRecorder, mp4 preferred for iOS, else webm). Recordings live in `repos.recordings` and are **device-only**:
+  `LOCAL_ONLY_TABLES` keeps them out of backup export/import (blobs are large).
+- **Lick library** (`src/modules/licks`, `/licks`): original licks in `src/content/licks.ts`, written as semitones
+  from the home note with sixteenth-note durations, so every lick works in every key. `placeLick` puts a lick inside a
+  scale box; "Hear it" uses `playPhrase`; "Play it back" follows the mic note by note with `LickFollower` (pitch
+  class, rests skipped; attempt drill id `licks.playback.<id>`); "Next key" walks `ALL_KEYS_ORDER`. "Make your own"
+  saves tapped notes relative to the home note at or below the first note (`repos.licks`, schema v3).
 - **Pitch detection:** `listenToMic()` uses an `AnalyserNode` (fftSize 4096) polled ~30x/s with pitchy (McLeod).
   An AudioWorklet was the plan, but the analyser is simpler and reliable on iOS; revisit only if latency matters.
   Mic constraints turn off echo cancellation, noise suppression and AGC. `PitchStabilizer` turns noisy frames into
@@ -139,7 +154,7 @@ Pages (repo Settings, Pages, Source: GitHub Actions).
 - [x] Phase 2: Fretboard Mastery (name/find/find-all/play-by-mic, levels, heatmap, octave shapes), tuner, metronome, timing check, drill engine, spaced repetition
 - [x] Phase 3: backing-track engine, Free Play, Improv Lab core (CAGED scale shapes moved to Phase 8)
 - [x] Phase 4: Chords Everywhere (triads, CAGED, drop-2/3, voice-led progression trainer, chord builder, transpose; circle of fifths and CAGED scale shapes moved to Phase 8)
-- [ ] Phase 5: improv challenges, mic analysis, lick library, recording
+- [x] Phase 5: improv challenges, mic analysis, lick library, recording
 - [ ] Phase 6: Ear Training
 - [ ] Phase 7: Solo Study (alphaTab)
 - [ ] Phase 8: planner, progress, PWA polish, Hebrew, circle of fifths, CAGED scale shapes

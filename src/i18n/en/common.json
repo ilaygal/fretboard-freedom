@@ -24,7 +24,11 @@
     "notesHint": "Find any note on the neck, fast",
     "toolsHint": "Tune up, keep time",
     "improvHint": "Play over the band and see the chord on the neck",
-    "chordsHint": "Every chord, everywhere on the neck"
+    "chordsHint": "Every chord, everywhere on the neck",
+    "challenges": "Improv challenges",
+    "challengesHint": "A small rule, a band, and a report afterwards",
+    "licks": "Lick library",
+    "licksHint": "Short phrases to learn in every key"
   },
   "explorer": {
     "key": "Key",
@@ -392,5 +396,178 @@
     "up": "Higher",
     "semitoneHint": "Each step is one fret. +2 moves everything two frets up (higher).",
     "capoHint": "Tip: put a capo on fret {{fret}} and play these shapes, and it sounds like your original chords."
+  },
+  "challenges": {
+    "title": "Improv challenges",
+    "intro": "Pick a challenge. The band plays, you follow one small rule, and you get a short report at the end.",
+    "level": "Level {{n}}",
+    "yourBox": "Your hand position: box {{n}}, around fret {{fret}}",
+    "yourTurn": "Your turn: answer!",
+    "listen": "Band's turn: listen",
+    "listening": "Listening",
+    "listenToMe": "Listen to me",
+    "record": "Record me",
+    "back": "Back",
+    "headphones": "Tip: use the phone speaker or one earbud out, so the mic hears your guitar more than the band.",
+    "micWhy": "Turn on the mic so I can hear what you play and give you a report.",
+    "heard": "Notes heard: {{count}}",
+    "stars": "{{n}} of 3 stars",
+    "done": "Challenge done!",
+    "almost": "Nice try, go again?",
+    "noMic": "The mic was off, so there is no report this time. Turn on \"Listen to me\" next time.",
+    "r": {
+      "notes": "You played {{count}} notes",
+      "chordNotes": "{{pct}}% landed on the chord's notes",
+      "inside": "{{pct}}% fit the key",
+      "range": "From {{low}} up to {{high}}",
+      "registers": "Where on the neck (by pitch)",
+      "low": "Low",
+      "mid": "Middle",
+      "high": "High",
+      "thirds": "You started {{hits}} of {{tries}} bars on the chord's 3rd",
+      "distinct": "Different notes used: {{count}}"
+    },
+    "tips": {
+      "playMore": "Play a bit more: even one note per bar counts.",
+      "aimChord": "Try ending your phrases on a yellow note (a note of the chord).",
+      "goHigher": "You stayed low. Try a phrase higher up the neck.",
+      "goLower": "You stayed high. Try a phrase on the thicker strings.",
+      "moreNotes": "Add a few more notes between your long ones.",
+      "keepRule": "Keep to the rule a bit more and you'll get it.",
+      "great": "Lovely playing. Try the next level!"
+    },
+    "items": {
+      "freeJam": {
+        "title": "Free jam",
+        "how": "No rules. Just play over a 12-bar blues and see your report."
+      },
+      "threeNotes": {
+        "title": "Only three notes",
+        "how": "Pick any three notes and use only those. Make them sing with rhythm."
+      },
+      "oneNote": {
+        "title": "One note groove",
+        "how": "Play just one note. Make it groove with rhythm alone."
+      },
+      "oneString": {
+        "title": "One string",
+        "how": "Play only on string 2 (the B string). Slide up and down it."
+      },
+      "twoStrings": {
+        "title": "Two strings",
+        "how": "Only the two thinnest strings. Move along the neck, not across it."
+      },
+      "callResponse": {
+        "title": "Question and answer",
+        "how": "The band asks for a bar, you answer in the next. Rest while it's the band's turn."
+      },
+      "chordTones": {
+        "title": "Chord notes",
+        "how": "Aim for the yellow notes, the notes of the chord sounding now."
+      },
+      "newPosition": {
+        "title": "New place on the neck",
+        "how": "Stay in the hand position shown. It's one you don't use much."
+      },
+      "targetThird": {
+        "title": "Land on the 3rd",
+        "how": "Start each bar on the chord's 3rd (shown in purple). It makes the change sound clear."
+      }
+    },
+    "again": "Again",
+    "another": "Another challenge",
+    "listenBack": "Listen back",
+    "recordings": "Your recordings",
+    "recordingsLocal": "Recordings stay on this device and are not part of the backup.",
+    "delete": "Delete"
+  },
+  "licks": {
+    "title": "Lick library",
+    "intro": "Short phrases to learn by ear and by hand. Hear one, play it back, then take it to the next key.",
+    "filter": "Show",
+    "all": "All",
+    "tags": {
+      "minor": "Sad / minor",
+      "major": "Happy / major",
+      "blues": "Blues",
+      "rock": "Rock",
+      "pop": "Pop",
+      "country": "Country",
+      "funk": "Funk",
+      "call": "Question",
+      "response": "Answer",
+      "chord": "Chord notes",
+      "mine": "Mine"
+    },
+    "make": "Make your own lick",
+    "makeHow": "Tap notes on the neck in the order you play them. They are saved relative to the home note ({{key}}), so your lick works in every key.",
+    "howToRead": "Numbers show the order. The red notes are home.",
+    "position": "Hand position",
+    "box": "Box {{n}} · fret {{fret}}",
+    "hear": "Hear it",
+    "playBack": "Play it back",
+    "nextKey": "Next key: {{key}}",
+    "playNote": "Play note {{n}} of {{of}}",
+    "clean": "Clean! Now try the next key.",
+    "gotIt_one": "Got it, with {{count}} slip.",
+    "gotIt_other": "Got it, with {{count}} slips.",
+    "scale": "Scale",
+    "tapped_one": "{{count}} note",
+    "tapped_other": "{{count}} notes",
+    "undo": "Undo",
+    "clear": "Clear",
+    "name": "Name",
+    "defaultName": "My lick {{n}}",
+    "save": "Save lick",
+    "items": {
+      "stairsDown": {
+        "title": "Walking down home",
+        "how": "Five steps down the minor pentatonic, ending on the home note."
+      },
+      "stairsUp": {
+        "title": "Climbing up",
+        "how": "The same steps going up. Let the last note ring."
+      },
+      "question": {
+        "title": "The question",
+        "how": "Goes up and stops on the 5th, like asking something. Pair it with The answer."
+      },
+      "answer": {
+        "title": "The answer",
+        "how": "Comes back down and settles on home."
+      },
+      "bluesSlide": {
+        "title": "Blue slide",
+        "how": "Slips through the blue note on the way home."
+      },
+      "repeater": {
+        "title": "The repeater",
+        "how": "Three fast notes, three times. A classic rock trick."
+      },
+      "minorArp": {
+        "title": "Minor chord walk",
+        "how": "Just the notes of the home minor chord, up and back."
+      },
+      "sunnyUp": {
+        "title": "Sunny climb",
+        "how": "Up the major pentatonic, bright and happy."
+      },
+      "sunnyTurn": {
+        "title": "Country turn",
+        "how": "Dips below home and bounces back up."
+      },
+      "majorArp": {
+        "title": "Major chord walk",
+        "how": "The home major chord's notes, with a step back down."
+      },
+      "dorianColour": {
+        "title": "Dorian colour",
+        "how": "Minor, but with a brighter 6th. Great over funk."
+      },
+      "mixoHook": {
+        "title": "Rock hook",
+        "how": "Major with a flat 7th. Sounds great over a rock or blues groove."
+      }
+    }
   }
 }

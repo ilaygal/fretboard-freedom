@@ -6,6 +6,8 @@ export type MicError = 'denied' | 'unsupported' | 'failed';
 
 export interface MicListener {
   stop(): void;
+  /** The mic as an audio node, e.g. for recording. */
+  source: MediaStreamAudioSourceNode;
 }
 
 /**
@@ -49,6 +51,7 @@ export async function listenToMic(onFrame: (r: PitchReading) => void): Promise<M
   tick();
 
   return {
+    source,
     stop() {
       running = false;
       clearTimeout(timer);

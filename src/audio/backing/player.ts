@@ -172,6 +172,18 @@ export class BackingPlayer {
     transport.start('+0.08');
   }
 
+  /** Transport ticks since Play (192 per quarter), for timing what the player plays. */
+  ticksNow(): number | null {
+    const tone = getTone();
+    if (!tone || !this.playing) return null;
+    return tone.getTransport().ticks;
+  }
+
+  /** Current tempo, for converting delays to ticks. */
+  bpmNow(): number {
+    return getTone()?.getTransport().bpm.value ?? 120;
+  }
+
   setTempo(bpm: number) {
     const tone = getTone();
     if (tone) tone.getTransport().bpm.rampTo(bpm, 0.2);

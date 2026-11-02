@@ -1,4 +1,4 @@
-import { SCHEMA_VERSION, type AppDatabase } from '../../db';
+import { LOCAL_ONLY_TABLES, SCHEMA_VERSION, type AppDatabase } from '../../db';
 import type { BackupFile, BackupRepository } from '../types';
 
 export class DexieBackupRepository implements BackupRepository {
@@ -6,15 +6,20 @@ export class DexieBackupRepository implements BackupRepository {
 
   async exportAll(): Promise<BackupFile> {
     const tables: Record<string, unknown[]> = {};
-    for (const table of this.db.tables) tables[table.name] = await table.toArray();
+    for (const table of this.backedUp()) tables[table.name] = await table.toArray();
     return { app: 'fretboard-freedom', schemaVersion: SCHEMA_VERSION, exportedAt: new Date().toISOString(), tables };
+  }
+
+  private backedUp() {
+    return this.db.tables.filter((t) => !LOCAL_ONLY_TABLES.includes(t.name));
   }
 
   /** Replaces all local data with the backup. Throws without changing anything if the file is not valid. */
   async importAll(file: unknown): Promise<void> {
     const backup = validate(file);
-    await this.db.transaction('rw', this.db.tables, async () => {
-      for (const table of this.db.tables) {
+    const tables = this.backedUp();
+    await this.db.transaction('rw', tables, async () => {
+      for (const table of tables) {
         await table.clear();
         const rows = backup.tables[table.name];
         if (rows?.length) await table.bulkPut(rows);
